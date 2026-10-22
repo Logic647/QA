@@ -3,7 +3,8 @@
 > 本文档用于将项目从当前开发者交接给 Codex 继续维护。
 > 生成时间：2026-08-25
 > **注（2026-08-30）**：本文档部分内容已过时（Neo4j 知识图谱已下线，数据库以 MySQL 为准），最新状态以 `HANDOVER_ADDENDUM.md` 为准。敏感值已脱敏，原始副本见本地 `HANDOVER*-local.md`（不入库）。
-> 项目路径：`F:\桌面\数据库课程设计`
+> **注（2026-09-21）**：最新现况见 `HANDOVER_ADDENDUM.md` 的 **§0 追加更新**（admin 冰青改版已过视觉验收、小程序 `.sheet` 冲突已修、仓库已迁至 H 盘、待办含 origin 内嵌 PAT 清理）。
+> 项目路径：`H:\桌面\数据库课程设计`
 > GitHub：`https://github.com/Logic647/Q-A.git`（分支 `feature/knowledge-graph`）
 
 ---

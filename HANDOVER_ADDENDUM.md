@@ -7,11 +7,64 @@
 
 ---
 
+## 0. 追加更新(2026-09-21)· 改版收尾与现况快照
+
+> 本节为最新状态,优先于下文 2026-08-29 的记录;下文保留为历史基线。
+
+### 0.1 交接快照(刷新)
+
+| 项 | 现状 |
+| --- | --- |
+| 本地仓库 | **`H:\桌面\数据库课程设计`**(已由 `F:\` 迁至 `H:\`;下文所有 `F:\桌面\数据库课程设计` 路径均需按此替换) |
+| 分支 / 提交 | `feature/knowledge-graph` @ `6170fe5`(工作树干净,与 `origin/feature/knowledge-graph` 同步) |
+| 远端 | `Logic647/QA` —— **origin URL 内嵌了 GitHub PAT,见 0.4 待办 1** |
+| 后端 | Express 5 + MySQL 8 + Redis,入口 `server/app.js`(168 行) |
+| admin 前端 | `server/public/admin.html`(482 行单文件 SPA)—— **已按冰青品牌完成改版并通过视觉验收** |
+| 小程序 | `miniprogram/`(7 页,约 2300 行 WXML/WXSS,`app.wxss` 令牌体系) |
+| 本地测试 | `server/` 下 `npm test` **12/12 通过**(Node 24) |
+| CI | `.github/workflows/ci.yml`:server 测试跑 Node 20 / 24 双版本 |
+| 生产 | 阿里云 `121.199.68.192`、PM2 `qa-server`、`logic-yjb.top`(记录的生产同步基线仍是 `c783404`,是否已同步到 `6170fe5` 需核对,见 0.4) |
+
+### 0.2 近期变更(2026-08-26 → 09-08)
+
+- **08-30 主线一批**:`ci: add GitHub Actions workflow running server tests on Node 20/24`(2976618)/ 测试套件 hermetic 化(3c235ae)/ **仓库密钥清理**(f8d7c07:LLM key 与 DB/管理员口令)/ 本地文件忽略与一次性脚本移入 `scratch/`(953dc08)/ 脱敏交接文档入库与 README 刷新(bcc3cea)
+- **UI 改版三连**:`feat(admin): redesign web admin console on the unified ice-teal brand`(67a5aae)/ `feat(miniprogram): extend design tokens and rework page chrome`(f0534be)/ `feat(miniprogram): chat waiting states, answer retry, and map page wiring`(2c02856)
+- **09-08 收尾**:源码剩余硬编码凭据清除(325a351)/ 课程论文 docx(含个人信息)加入忽略(6170fe5)
+
+### 0.3 多代理并行评审的验收结论(2026-09 上旬)
+
+| 范围 | 结论 |
+| --- | --- |
+| **admin 控制台** | **通过**。视觉验收 5 页全 pass(登录 / 概览 / 知识库 / 弹窗 / 移动端概览):冰青 `#0d7a68` 统一色板(无紫色残留)、描边 SVG 图标(无 emoji 残留)、侧栏 6 模块信息架构 + 青色激活态、自绘编辑弹窗替代原生 prompt、表格单元格按设计截断;桌面 1280×720 与移动 390×844 均无溢出与对比度问题。截图在本地 `.impeccable/review/`(已 gitignore,不入库) |
+| **小程序** | **通过,曾有 1 个 blocker 且已修复**。评审判定曾为 FAIL:全局 `.sheet`(`position:fixed; transform:translateY(100%)`)与地图页本地 `.sheet` 撞名,校园地图面板被推出屏幕。**现已改名避让** —— `app.wxss` 改用 `.sheet-mask` / `.sheet-handle`,并在 `app.wxss:139` 留注释「命名避开 pages/map 的本地 .sheet 类」,冲突不复存在 |
+| **后端只读勘察** | `app.js` 168 行:手写 `.env` 解析(非 dotenv);缺 `ADMIN_KEY`/`ADMIN_USERNAME`/`ADMIN_PASSWORD` 直接抛错;挂载顺序为 CORS → json(2mb) → `/public` 静态 → 30s 超时 → 5s 慢请求日志 → 页面路由 → **`POST /api/admin/login` 定义在 `/api/admin` 路由之前,绕过了该路由的限流与鉴权**(若要收紧鉴权,需先调整挂载顺序) |
+| **小程序 UI/UX 勘察** | `app.wxss` 33 行令牌体系(`--bg/--surface/--ink` 等);7 页约 2300 行 WXML/WXSS;**`miniprogram/images/` 完全为空**;**无 tabBar** |
+
+### 0.4 待办(按优先级)
+
+1. **清理 origin remote 内嵌的 PAT**:`git remote -v` 会直接打印该凭据(`.git/config`、任何配置导出同样会带出)。应改用 credential store 或 SSH key:`git remote set-url origin https://github.com/Logic647/QA.git`;**该 token 是否已吊销需自查** —— 仓库此前已做过多轮密钥清理(325a351 / f8d7c07),这一处是漏网
+2. 文档正文中的旧路径 `F:\桌面\数据库课程设计` → `H:\桌面\数据库课程设计` 全面替换(本节已改,正文多处待替换)
+3. 小程序 `miniprogram/images/` 空目录、无 tabBar —— 是否补图标资产与底部导航待定
+4. 后端 `POST /api/admin/login` 挂载顺序(绕过限流/鉴权)是否调整
+5. 核对生产环境(`/root/QA`、`/opt/qa-server`)是否已同步到 `6170fe5`(记录基线仍是 `c783404`)
+6. 论文 docx 与流程图含个人信息,已 gitignore;若需提交论文正文需人工脱敏
+
+### 0.5 复现命令
+
+```bash
+cd "H:\桌面\数据库课程设计"
+cd server && npm test          # 12/12
+cd .. && git log --oneline -10
+# admin 视觉验收截图(本地,不入库):.impeccable/review/*.png
+```
+
+---
+
 ## 1. 交接快照
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 本地仓库 | `F:\桌面\数据库课程设计` |
+| 本地仓库 | `H:\桌面\数据库课程设计`(2026-09 由 F: 迁入,见 §0) |
 | 当前分支 | `feature/knowledge-graph` |
 | 远端 | `origin/Logic647/QA`，分支已推送至 `c783404` |
 | 后端 | Express 5 + MySQL 8 + Redis，入口 `server/app.js` |
