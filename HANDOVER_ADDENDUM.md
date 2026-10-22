@@ -17,7 +17,7 @@
 | --- | --- |
 | 本地仓库 | **`H:\桌面\数据库课程设计`**(已由 `F:\` 迁至 `H:\`;下文所有 `F:\桌面\数据库课程设计` 路径均需按此替换) |
 | 分支 / 提交 | `feature/knowledge-graph` @ `6170fe5`(工作树干净,与 `origin/feature/knowledge-graph` 同步) |
-| 远端 | `Logic647/QA` —— **origin URL 内嵌了 GitHub PAT,见 0.4 待办 1** |
+| 远端 | `Logic647/QA` —— **远端 URL 的内嵌 PAT 已于 2026-09-21 清理**(`git remote set-url`),推送凭据改由 credential store 提供;**原 token 本体待吊销**,见 0.4 待办 1 |
 | 后端 | Express 5 + MySQL 8 + Redis,入口 `server/app.js`(168 行) |
 | admin 前端 | `server/public/admin.html`(482 行单文件 SPA)—— **已按冰青品牌完成改版并通过视觉验收** |
 | 小程序 | `miniprogram/`(7 页,约 2300 行 WXML/WXSS,`app.wxss` 令牌体系) |
@@ -42,7 +42,7 @@
 
 ### 0.4 待办(按优先级)
 
-1. **清理 origin remote 内嵌的 PAT**:`git remote -v` 会直接打印该凭据(`.git/config`、任何配置导出同样会带出)。应改用 credential store 或 SSH key:`git remote set-url origin https://github.com/Logic647/QA.git`;**该 token 是否已吊销需自查** —— 仓库此前已做过多轮密钥清理(325a351 / f8d7c07),这一处是漏网
+1. **吊销原 PAT(URL 已清理,token 本体仍需作废)**:远端 URL 曾内嵌 GitHub PAT,`git remote -v` 会直接打印该凭据(`.git/config`、任何配置导出同样带出)——**2026-09-21 已执行 `git remote set-url origin https://github.com/Logic647/QA.git`,URL 现已干净,推送凭据由 credential store 提供(已验证认证可用)**。剩余动作:该 token 曾在终端/会话输出中明文暴露,**请在 GitHub → Settings → Developer settings → Personal access tokens 中 Revoke**,需要继续推送则重新生成带 `repo` scope 的 PAT 并用 `git credential store` 保存。仓库此前已做过多轮密钥清理(325a351 / f8d7c07),这一处是漏网
 2. 文档正文中的旧路径 `F:\桌面\数据库课程设计` → `H:\桌面\数据库课程设计` 全面替换(本节已改,正文多处待替换)
 3. 小程序 `miniprogram/images/` 空目录、无 tabBar —— 是否补图标资产与底部导航待定
 4. 后端 `POST /api/admin/login` 挂载顺序(绕过限流/鉴权)是否调整
